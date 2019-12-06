@@ -4,7 +4,8 @@ exports.resolvers = {
     Query: {
       viewer: fromQueries.getUserById,
       creditScore: fromQueries.getCreditScore,
-      transactions: fromQueries.getTransactionsById
+      transactions: fromQueries.getTransactionsById,
+      asset: fromQueries.getAsset
     },
     User: {
       creditScore: fromQueries.getCreditScore,

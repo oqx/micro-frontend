@@ -2,22 +2,18 @@ const express = require("express");
 const Schema = require("./apollo/schema");
 const next = require("next");
 const { ApolloServer } = require("apollo-server-express");
-const path = require('path')
+const fetch = require("node-fetch");
 
 const isDev = process.env.NODE_ENV !== "production";
 const nextApp = next({ isDev });
 const handle = nextApp.getRequestHandler();
 const app = express();
-const COMPONENT_DIR = path.join(__dirname, '../../zippy/creditscore-1.0.0/')
-const MANIFEST = require(COMPONENT_DIR + 'manifest.json')
 
 nextApp
   .prepare()
   .then(() => {
     const server = new ApolloServer(Schema);
-    server.applyMiddleware({ app });
-
-    app.use('/credit-score/main.js', express.static(COMPONENT_DIR, MANIFEST['main.js']))
+    server.applyMiddleware({ app, cors: true });
 
     app
       .get("*", (req, res) => {

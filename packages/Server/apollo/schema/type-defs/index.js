@@ -10,7 +10,7 @@ exports.typeDefs = gql`
     type CreditScoreConnection {
         id: ID!,
         belongsTo: ID!,
-        scores: CreditScoreNode
+        scores: [CreditScoreNode]
     }
 
     type TransactionNode {
@@ -22,7 +22,7 @@ exports.typeDefs = gql`
     type TransactionConnection {
         id: ID!
         belongsTo: ID!
-        transactions: TransactionNode
+        transactions: [TransactionNode]
     }
 
     type User {
@@ -33,9 +33,14 @@ exports.typeDefs = gql`
         transactions: TransactionConnection
     }
 
+    type Asset {
+        src: String!
+    }
+
     type Query {
         viewer: User
-        creditScore: CreditScoreConnection
+        creditScore(id: ID!): CreditScoreConnection
         transactions: TransactionConnection
+        asset: Asset
     }
 `

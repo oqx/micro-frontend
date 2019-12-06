@@ -1,30 +1,75 @@
-import { createResource } from './createResource';
+import { useState, useEffect } from "react";
 
-export interface ScriptProps {
-  src: HTMLScriptElement['src'];
-}
-export const ScriptResource = createResource((src: ScriptProps['src']) => {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = src;
-    script.onload = () => resolve(script);
-    script.onerror = reject;
-    // @todo decide if this is sensible.
-    // script.async = true
-    document.body.appendChild(script);
+let cachedScripts: string[] = [];
+
+export function useScript(src: string, namespace: string) {
+  let script: any
+  // Keeping track of script loaded and error state
+  const [state, setState] = useState({
+    loaded: false,
+    error: false,
+    component: null
   });
-});
 
-export const Script: React.FC<ScriptProps> = ({ children, ...rest }) => {
-  ScriptResource.read(rest.src);
+  useEffect(
+    () => {
+      // If cachedScripts array already includes src that means another instance ...
+      // ... of this hook already loaded this script, so no need to load again.
+      if (cachedScripts.includes(src)) {
+        setState({
+          component: null,
+          loaded: true,
+          error: false
+        });
+      } else {
+        cachedScripts.push(src);
 
-  if (typeof children === 'function') {
-    return children();
-  }
+        // Create script
+        script = document.createElement("script");
+        script.src = src;
+        script.async = true;
 
-  return children;
-};
+        // Script event listener callbacks for load and error
+        const onScriptLoad = () => {
+          // @ts-ignore
+          if(window[namespace] && window[namespace].default) {
+            setState({
+              // @ts-ignore
+              component: window[namespace].default,
+              loaded: true,
+              error: false
+            });
+          }
+        };
 
-export function useScript({ src }: ScriptProps) {
-  return ScriptResource.read(src);
+        const onScriptError = () => {
+          // Remove from cachedScripts we can try loading again
+          const index = cachedScripts.indexOf(src);
+          if (index >= 0) cachedScripts.splice(index, 1);
+          script.remove();
+
+          setState({
+            component: null,
+            loaded: true,
+            error: true
+          });
+        };
+
+        script.addEventListener("load", onScriptLoad);
+        script.addEventListener("error", onScriptError);
+
+        // Add script to document body
+        document.body.appendChild(script);
+
+        // Remove event listeners on cleanup
+        return () => {
+          script.removeEventListener("load", onScriptLoad);
+          script.removeEventListener("error", onScriptError);
+        };
+      }
+    },
+    [src] // Only re-run effect if script src changes
+  );
+
+  return { component: state.component, error: state.error };
 }

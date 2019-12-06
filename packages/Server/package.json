@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "start": "node server.js --inspect",
+    "start": "APP_VERSION=1.0.0 nodemon -w pages -w apollo server.js",
     "build": "next build",
     "start:prod": "NODE_ENV=production node server.js"
   },
@@ -27,7 +27,11 @@
     "isomorphic-unfetch": "^3.0.0",
     "next": "^9.1.4",
     "next-with-apollo": "^4.3.0",
+    "node-fetch": "^2.6.0",
+    "nodemon": "^2.0.1",
+    "prop-types": "^15.7.2",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "request": "^2.88.0"
   }
 }

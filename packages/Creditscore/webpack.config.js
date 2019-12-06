@@ -5,23 +5,18 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const IS_DEV = process.env.NODE_ENV === 'development'
 
 const externals = {
-    react: {
-        commonjs: 'react',
-        commonjs2: 'react',
-        amd: 'React',
-        root: 'React'
-    },
-    'react-dom': {
-        commonjs: 'react-dom',
-        commonjs2: 'react-dom',
-        amd: 'ReactDOM',
-        root: 'ReactDOM'
-    }
+    react: 'React',
+    'react-dom': 'ReactDOM',
+    'prop-types': 'PropTypes',
+    'graphql': 'graphql',
+    '@apollo/react-hooks': '@apollo/react-hooks',
+    'apollo-boost': 'apollo-boost'
 }
 
 let webpackConfig = {
     entry: IS_DEV ? './Example.tsx' : './src/index.tsx',
     output: {
+        library: 'CreditScore',
         path: path.join(__dirname, '/dist'),
         filename: '[name]-[hash].js',
         libraryTarget: 'umd',
@@ -29,10 +24,6 @@ let webpackConfig = {
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        alias: {
-            react: path.resolve(__dirname, './node_modules/react'),
-            'react-dom': path.resolve(__dirname, './node_modules/react-dom')
-        }
     },
 
     module: {
