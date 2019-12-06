@@ -1,5 +1,5 @@
 {
-  "name": "@micro-frontend/loader",
+  "name": "@oqx/micro-frontend",
   "version": "1.0.3",
   "description": "",
   "main": "dist/index.js",
