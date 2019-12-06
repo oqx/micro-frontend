@@ -12,6 +12,7 @@
     "build": "npx webpack --mode production",
     "check-types": "npx tsc"
   },
+  "files": ["dist/*"],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
