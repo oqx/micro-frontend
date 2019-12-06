@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 import React from 'react'
 
-const Component = dynamic(() => import('../components'), {
+const Component = dynamic(() => import('@oqx/micro-frontend'), {
     ssr: false
 })
 const Page = (props) => {
